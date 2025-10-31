@@ -15,7 +15,7 @@ jobs:
   test-oidc-connection:
     name: "OIDC Validation for George's Kubeflow Deployment"
     runs-on: ubuntu-latest
-    environment: Production    # Must match FIC environment subject (configured in setup script)
+#    environment: Production    # Must match FIC environment subject (configured in setup script)
 
     steps:
       # ===============================
