@@ -53,6 +53,8 @@ jobs:
             az account show
 
 
+
+
       # ===============================
       # Step 3: Verify Authentication
       # ===============================
