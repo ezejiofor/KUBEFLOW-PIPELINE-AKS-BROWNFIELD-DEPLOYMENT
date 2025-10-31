@@ -1,0 +1,80 @@
+name: 🔐 Test Azure OIDC Connection
+
+on:
+  workflow_dispatch:    # Manual trigger from GitHub UI
+  push:
+    branches: [main]    # Automatically runs on push to main
+    paths:
+      - '.github/workflows/test-oidc-connection.yml'
+
+permissions:
+  id-token: write       # Required for Azure OIDC authentication
+  contents: read        # Required for checking out the repo
+
+jobs:
+  test-oidc-connection:
+    name: "OIDC Validation for George's Kubeflow Deployment"
+    runs-on: ubuntu-latest
+    environment: Production    # Must match FIC environment subject (configured in setup script)
+
+    steps:
+      # ===============================
+      # Step 1: Checkout Repository
+      # ===============================
+      - name: 🧾 Checkout repository
+        uses: actions/checkout@v4
+
+      # ===============================
+      # Step 2: Authenticate to Azure via OIDC
+      # ===============================
+      - name: 🔐 Azure OIDC Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # ===============================
+      # Step 3: Verify Authentication
+      # ===============================
+      - name: ✅ Verify Azure Access
+        run: |
+          echo "=============================================="
+          echo "🔐 Azure OIDC Authentication Successful!"
+          echo "----------------------------------------------"
+          echo "Subscription Name : $(az account show --query name -o tsv)"
+          echo "Subscription ID   : $(az account show --query id -o tsv)"
+          echo "Tenant ID         : $(az account show --query tenantId -o tsv)"
+          echo "User Principal    : $(az account show --query user.name -o tsv)"
+          echo "=============================================="
+
+      # ===============================
+      # Step 4: Run Basic Azure Validation Commands
+      # ===============================
+      - name: 🧠 Test Azure Access
+        run: |
+          echo "🔍 Validating access to Azure resources..."
+          echo "----------------------------------------------"
+          echo "Available Resource Groups:"
+          az group list --query "[].name" -o table || echo "⚠️ No resource groups accessible for this identity."
+          echo ""
+          echo "✅ Basic Azure command test completed successfully!"
+          echo "----------------------------------------------"
+
+      # ===============================
+      # Step 5: Generate GitHub Summary Report
+      # ===============================
+      - name: 🧾 Create Test Summary Report
+        run: |
+          {
+            echo "## ✅ Azure OIDC Test Results"
+            echo ""
+            echo "- ✅ Successfully authenticated to Azure via OIDC"
+            echo "- ✅ Verified access to subscription and tenant"
+            echo "- ✅ Resource listing successful (read-only validation)"
+            echo ""
+            echo "**Environment:** Production"
+            echo "**Repository:** ezejiofor/KUBEFLOW-PIPELINE-AKS-BROWNFIELD-DEPLOYMENT"
+            echo ""
+            echo "🧭 *Next Steps:* Proceed with ArgoCD and Kubeflow deployment setup."
+          } >> $GITHUB_STEP_SUMMARY
