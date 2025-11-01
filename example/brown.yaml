@@ -69,10 +69,10 @@ resources:
 
 
   # Profiles & User Management
-  #  - ../../applications/profiles/upstream/overlays/kubeflow  # <-- REMOVE: Causes CRD duplication
+  - ../../applications/profiles/upstream/overlays/kubeflow
 
   # Profiles + KFAM with PSS (Pod Security Standards)
-  #  - ../../applications/profiles/pss # TODO MUST BE UPSTREAMED # <-- REMOVE: Causes CRD duplication & path error
+  - ../../applications/profiles/pss # TODO MUST BE UPSTREAMED
 
 
   # KServe (Model Serving)
