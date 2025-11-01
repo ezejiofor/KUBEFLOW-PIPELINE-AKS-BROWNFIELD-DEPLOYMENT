@@ -56,7 +56,9 @@ resources:
   - ../../applications/pipeline/upstream/env/platform-agnostic-multi-user
 
   # Katib (Hyperparameter tuning)
-  - ../../applications/katib/upstream/installs/katib-standalone
+#  - ../../applications/katib/upstream/installs/katib-standalone
+  # Katib
+  - ../../applications/katib/upstream/installs/katib-with-kubeflow
 
   # Central Dashboard
   - ../../applications/centraldashboard/upstream/overlays/kserve
